@@ -46,10 +46,8 @@ npm start
 ```plaintext
 .
 ├── public
-│   ├── css
-│   │   └── style.css       # CSS file for styling
-│   ├── js
-│   │   └── script.js       # JavaScript file for handling UI interactions
+│   ├── style.css 
+│   ├── script.js           # JavaScript file for handling UI interactions
 │   └── index.html          # Main HTML file
 ├── server.js               # Node.js server file
 ├── package.json            # Project dependencies and scripts
