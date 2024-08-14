@@ -1,10 +1,12 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const multer = require('multer');
 const similarity = require('string-similarity');
 
 // Configuração do multer para capturar o nome completo do arquivo
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ dest: 'uploads/' });
 
 const app = express();
 
@@ -14,13 +16,12 @@ app.post('/check-similarity', upload.array('files'), (req, res) => {
     const files = req.files;
     const fileContents = {};
 
+    console.log(`Processando ${files.length} arquivos`);
+
     files.forEach(file => {
-        
-        const relativePath = file.originalname.replace(/\\/g, '/'); // Mantém o caminho relativo original
-        const content = file.buffer.toString('utf8'); // Lê o conteúdo do buffer diretamente
-        
-        // Armazena o conteúdo do arquivo e o caminho original como chave
-        fileContents[relativePath] = content;
+        const content = fs.readFileSync(file.path, 'utf8');
+        fileContents[file.originalname] = content;
+        fs.unlinkSync(file.path); // Limpa o arquivo temporário
     });
 
     let similarities = {};
@@ -32,7 +33,7 @@ app.post('/check-similarity', upload.array('files'), (req, res) => {
             const file1Key = fileKeys[i];
             const file2Key = fileKeys[j];
             const similarityScore = similarity.compareTwoStrings(fileContents[file1Key], fileContents[file2Key]);
-
+            
             if (similarityScore > 0.7) { // Threshold de similaridade (pode ajustar)
                 if (!similarities[file1Key]) similarities[file1Key] = [];
                 similarities[file1Key].push({
