@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de Similaridade de Projetos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Verificador de Similaridade de Projetos</h1>
+        <form id="projectForm" enctype="multipart/form-data">
+            <label for="projectFolder">Selecione a pasta dos projetos:</label>
+            <input type="file" id="projectFolder" webkitdirectory directory multiple>
+            <button type="submit">Verificar Similaridade</button>
+        </form>
+    </div>
+
+        <!-- <div id="progressDiv" style="display:none; margin-top: 20px;">
+            <div id="progressBar" style="width: 0%; height: 30px; background-color: #4caf50; text-align: center; color: white;">0%</div>
+        </div> -->
+    
+    <div id="result" style="display: none;"></div>
+    
+
+    <script src="script.js"></script>
+</body>
+</html>
