@@ -15,9 +15,10 @@ app.use(express.static('public'));
 app.post('/check-similarity', upload.array('files'), (req, res) => {
     const files = req.files;
     const fileContents = {};
-    const SIMILARITY_THRESHOLD = 0.7; // Threshold de similaridade (pode ajustar)
+    const SIMILARITY_THRESHOLD = req.body.threshold; // Threshold de similaridade (pode ajustar)
 
     console.log(`Processando ${files.length} arquivos`);
+    console.log(`Threshold de similaridade: ${SIMILARITY_THRESHOLD}`);
 
     files.forEach(file => {
         const content = fs.readFileSync(file.path, 'utf8');

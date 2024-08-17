@@ -16,7 +16,8 @@ document.getElementById('projectForm').addEventListener('submit', function(event
     });
 
     const formData = new FormData();
-
+    formData.append( 'threshold', document.getElementById('threshold').value );
+    
     for (let file of filteredFiles) {
         const filePath = file.webkitRelativePath || file.name; // Captura o caminho relativo
         const newFileName = filePath.replace(/\//g, '_'); // Substitui '/' por '_'
