@@ -15,6 +15,7 @@ app.use(express.static('public'));
 app.post('/check-similarity', upload.array('files'), (req, res) => {
     const files = req.files;
     const fileContents = {};
+    const SIMILARITY_THRESHOLD = 0.7; // Threshold de similaridade (pode ajustar)
 
     console.log(`Processando ${files.length} arquivos`);
 
@@ -30,11 +31,12 @@ app.post('/check-similarity', upload.array('files'), (req, res) => {
 
     for (let i = 0; i < fileKeys.length; i++) {
         for (let j = i + 1; j < fileKeys.length; j++) {
+            if (i == j) continue; //pula arquivos iguais
             const file1Key = fileKeys[i];
             const file2Key = fileKeys[j];
             const similarityScore = similarity.compareTwoStrings(fileContents[file1Key], fileContents[file2Key]);
             
-            if (similarityScore > 0.7) { // Threshold de similaridade (pode ajustar)
+            if (similarityScore > SIMILARITY_THRESHOLD) { 
                 if (!similarities[file1Key]) similarities[file1Key] = [];
                 similarities[file1Key].push({
                     file: file2Key,
@@ -43,7 +45,7 @@ app.post('/check-similarity', upload.array('files'), (req, res) => {
             }
         }
     }
-
+    console.log("Fim da verificação");
     res.json(similarities);
 });
 

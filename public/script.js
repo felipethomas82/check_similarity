@@ -1,17 +1,23 @@
 document.getElementById('projectForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
+    const ignoreList = ['.DS_Store', 'Thumbs.db', '.gitignore', '.env', 'AndroidManifest.xml'];
+
     const folderInput = document.getElementById('projectFolder');
-    const files = folderInput.files;
+    const files = Array.from( folderInput.files );
 
     if (files.length === 0) {
         alert('Por favor, selecione uma pasta de projetos.');
         return;
     }
 
+    const filteredFiles = files.filter(file => {
+        return !ignoreList.some(ignoreFile => file.name.endsWith(ignoreFile));
+    });
+
     const formData = new FormData();
 
-    for (let file of files) {
+    for (let file of filteredFiles) {
         const filePath = file.webkitRelativePath || file.name; // Captura o caminho relativo
         const newFileName = filePath.replace(/\//g, '_'); // Substitui '/' por '_'
         formData.append('files', new File([file], newFileName));
