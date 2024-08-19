@@ -11,13 +11,18 @@ document.getElementById('projectForm').addEventListener('submit', function(event
         return;
     }
 
-    const filteredFiles = files.filter(file => {
+    let filteredFiles = files.filter(file => {
         return !ignoreList.some(ignoreFile => file.name.endsWith(ignoreFile));
     });
 
+    const fileExtension = document.getElementById('extension').value;
+    if ( fileExtension.trim() !== " " ) {
+        filteredFiles = filteredFiles.filter( file => file.name.endsWith( fileExtension ));
+    }
+
     const formData = new FormData();
     formData.append( 'threshold', document.getElementById('threshold').value );
-    
+
     for (let file of filteredFiles) {
         const filePath = file.webkitRelativePath || file.name; // Captura o caminho relativo
         const newFileName = filePath.replace(/\//g, '_'); // Substitui '/' por '_'
