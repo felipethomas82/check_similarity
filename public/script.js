@@ -13,7 +13,7 @@ document.getElementById('projectForm').addEventListener('submit', function(event
     event.preventDefault();
 
     const folderInput = document.getElementById('projectFolder');
-    const files = Array.from( folderInput.files );
+    const files = Array.from(folderInput.files);
 
     if (files.length === 0) {
         alert('Por favor, selecione uma pasta de projetos.');
@@ -29,12 +29,12 @@ document.getElementById('projectForm').addEventListener('submit', function(event
     });
 
     const fileExtension = document.getElementById('extension').value;
-    if ( fileExtension.trim() !== " " ) {
-        filteredFiles = filteredFiles.filter( file => file.name.endsWith( fileExtension ));
+    if (fileExtension.trim() !== " ") {
+        filteredFiles = filteredFiles.filter(file => file.name.endsWith(fileExtension));
     }
 
     const formData = new FormData();
-    formData.append( 'threshold', document.getElementById('threshold').value );
+    formData.append('threshold', document.getElementById('threshold').value);
 
     for (let file of filteredFiles) {
         const filePath = file.webkitRelativePath || file.name; // Captura o caminho relativo
@@ -58,19 +58,52 @@ document.getElementById('projectForm').addEventListener('submit', function(event
             for (let file1 in data) {
                 let similarFiles = data[file1];
                 let file1Div = document.createElement('div');
+                file1Div.classList.add('file-section');
                 file1Div.innerHTML = `<h3>Arquivo: ${file1}</h3>`;
-                
-                similarFiles.forEach(similar => {
-                    let similarityInfo = document.createElement('p');
-                    similarityInfo.innerText = `Similar a: ${similar.file} (Similaridade: ${(similar.similarity * 100).toFixed(2)}%)`;
+                renderCode(similarFiles, file1Div);
+
+                similarFiles.similars.forEach(similar => {
+                    // Div para informações de similaridade
+                    let similarityInfo = document.createElement('div');
+                    similarityInfo.classList.add('similar-file');
+                    similarityInfo.innerHTML = `
+                        <p>Similar a: ${similar.file} (Similaridade: ${(similar.similarity * 100).toFixed(2)}%)</p>
+                    `;
+                    renderCode(similar, similarityInfo);
                     file1Div.appendChild(similarityInfo);
                 });
-                
+
                 resultDiv.appendChild(file1Div);
             }
+
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+    
         }
     })
     .catch(error => {
         console.error('Erro:', error);
     });
 });
+
+function renderCode(similar, similarityInfo) {
+    similarityInfo.innerHTML += `
+        <button class="toggle-content">Exibir Conteúdo</button>
+        <div class="file-content" style="display: none;">
+            <pre><code class="language-java">${similar.content}</code></pre>
+        </div>
+    `;
+
+    // Evento para alternar a visibilidade do conteúdo do arquivo
+    similarityInfo.querySelector('.toggle-content').addEventListener('click', function() {
+        const contentDiv = similarityInfo.querySelector('.file-content');
+        if (contentDiv.style.display === 'none') {
+            contentDiv.style.display = 'block';
+            this.innerText = 'Ocultar Conteúdo';
+        } else {
+            contentDiv.style.display = 'none';
+            this.innerText = 'Exibir Conteúdo';
+        }
+    });
+}

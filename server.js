@@ -38,11 +38,18 @@ app.post('/check-similarity', upload.array('files'), (req, res) => {
             const similarityScore = similarity.compareTwoStrings(fileContents[file1Key], fileContents[file2Key]);
             
             if (similarityScore > SIMILARITY_THRESHOLD) { 
-                if (!similarities[file1Key]) similarities[file1Key] = [];
-                similarities[file1Key].push({
+                if (!similarities[file1Key]){
+                    similarities[file1Key] = {};
+                    similarities[file1Key].similars = [];
+                    similarities[file1Key]["content"] = fileContents[file1Key];
+                }
+                
+                similarities[file1Key].similars.push({
                     file: file2Key,
-                    similarity: similarityScore
+                    similarity: similarityScore,
+                    content: fileContents[file2Key]
                 });
+                
             }
         }
     }
