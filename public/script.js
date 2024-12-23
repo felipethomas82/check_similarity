@@ -1,7 +1,16 @@
+// Lista de arquivos a serem ignorados a partir do arquivo files_to_ignore.json da pasta public
+const file = fetch('/files_to_ignore.json');
+let ignoreList;
+file.then(response => response.json()).then(data => {
+    const divIgnoreFiles = document.getElementById('ignore_files');
+    for (const fileName of data) {
+        divIgnoreFiles.innerHTML += `${fileName}, `;
+    }
+    ignoreList = data;
+});
+
 document.getElementById('projectForm').addEventListener('submit', function(event) {
     event.preventDefault();
-
-    const ignoreList = ['.DS_Store', 'Thumbs.db', '.gitignore', '.env', 'AndroidManifest.xml'];
 
     const folderInput = document.getElementById('projectFolder');
     const files = Array.from( folderInput.files );
@@ -13,6 +22,10 @@ document.getElementById('projectForm').addEventListener('submit', function(event
 
     let filteredFiles = files.filter(file => {
         return !ignoreList.some(ignoreFile => file.name.endsWith(ignoreFile));
+    });
+
+    filteredFiles = files.filter(file => {
+        return !ignoreList.some(ignoreFile => file.name.toLowerCase().indexOf(ignoreFile.toLowerCase()) !== -1);
     });
 
     const fileExtension = document.getElementById('extension').value;
