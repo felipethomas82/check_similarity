@@ -59,27 +59,35 @@ document.getElementById('projectForm').addEventListener('submit', function(event
                 let similarFiles = data[file1];
                 let file1Div = document.createElement('div');
                 file1Div.classList.add('file-section');
-                file1Div.innerHTML = `<h3>Arquivo: ${file1}</h3>`;
-                renderCode(similarFiles, file1Div);
+
+                let fileInfoHTML = `
+                    <div class="file-info">
+                        <h3>Arquivo: ${file1}</h3>
+                `;
+                fileInfoHTML += renderCode(similarFiles);
+                fileInfoHTML += `
+                    </div>
+                    <div class="similar-files">
+                        <h4>Arquivos similares:</h4>
+                `;
 
                 similarFiles.similars.forEach(similar => {
-                    // Div para informações de similaridade
-                    let similarityInfo = document.createElement('div');
-                    similarityInfo.classList.add('similar-file');
-                    similarityInfo.innerHTML = `
-                        <p>Similar a: ${similar.file} (Similaridade: ${(similar.similarity * 100).toFixed(2)}%)</p>
+                    fileInfoHTML += `
+                        <div class="similar-file">
+                            <p>Similar a: ${similar.file} (Similaridade: ${(similar.similarity * 100).toFixed(2)}%)</p>
+                            ${renderCode(similar)}
+                        </div>
                     `;
-                    renderCode(similar, similarityInfo);
-                    file1Div.appendChild(similarityInfo);
                 });
+                fileInfoHTML += '</div>';
 
+                file1Div.innerHTML = fileInfoHTML;
                 resultDiv.appendChild(file1Div);
             }
 
             document.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightElement(block);
             });
-    
         }
     })
     .catch(error => {
@@ -87,23 +95,25 @@ document.getElementById('projectForm').addEventListener('submit', function(event
     });
 });
 
-function renderCode(similar, similarityInfo) {
-    similarityInfo.innerHTML += `
+function renderCode(similar) {
+    return `
         <button class="toggle-content">Exibir Conteúdo</button>
         <div class="file-content" style="display: none;">
             <pre><code class="language-java">${similar.content}</code></pre>
         </div>
     `;
+}
 
-    // Evento para alternar a visibilidade do conteúdo do arquivo
-    similarityInfo.querySelector('.toggle-content').addEventListener('click', function() {
-        const contentDiv = similarityInfo.querySelector('.file-content');
+// Evento para alternar a visibilidade do conteúdo do arquivo
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('toggle-content')) {
+        const contentDiv = event.target.nextElementSibling;
         if (contentDiv.style.display === 'none') {
             contentDiv.style.display = 'block';
-            this.innerText = 'Ocultar Conteúdo';
+            event.target.innerText = 'Ocultar Conteúdo';
         } else {
             contentDiv.style.display = 'none';
-            this.innerText = 'Exibir Conteúdo';
+            event.target.innerText = 'Exibir Conteúdo';
         }
-    });
-}
+    }
+});

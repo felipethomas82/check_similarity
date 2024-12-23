@@ -15,12 +15,19 @@ body {
     padding: 20px 40px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
+
     /* text-align: center; */
     margin-top: 20px;
 }
 
+.container {
+        width: 100%;
+    max-width: 600px;
+}
+
+#result {
+    width: 90%;
+}
 #threshold, #extension {
     margin-bottom: 15px;
     padding: 5px;
@@ -95,4 +102,29 @@ pre {
     overflow-x: auto;
     white-space: pre-wrap;
     word-wrap: break-word;
+}
+
+.file-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alinha os itens no topo */
+    margin-top: 10px;
+    border: 1px solid red;
+    min-width: 0;
+    flex-wrap: nowrap; /* Garante que os itens não quebrem para a próxima linha */
+}
+
+.file-info, .similar-files {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinha os itens no início */
+    border: 1px solid green;
+    word-break: break-all; /* Quebra palavras longas */
+    max-width: 48%; /* Define a largura máxima para garantir que ambos caibam lado a lado */
+    box-sizing: border-box; /* Inclui padding e border no tamanho total */
+    overflow-wrap: break-word; /* Quebra palavras longas */
+}
+
+.similar-files {
+    margin-top: 0; /* Remove a margem superior para alinhar com .file-info */
 }
